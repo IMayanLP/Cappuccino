@@ -111,98 +111,6 @@ void gerarTabuleiro(struct tab matriz[Tam][Tam], int player[4][5]){
   }
 }
 
-void exibeTabuleiro(struct tab matriz[Tam][Tam], int jogadorAtual){
-  limparTela();
-  printf("    1   2   3   4   5 ");
-  printf("\n  ---------------------\n");
-  for (int i = 0; i < Tam; i++){
-    switch (i){
-      case 0: printf("A |"); break;
-      case 1: printf("B |"); break;
-      case 2: printf("C |"); break;
-      case 3: printf("D |"); break;
-      case 4: printf("E |"); break;
-    } 
-    for (int j = 0; j < Tam; j++){
-      switch (matriz[i][j].altura){
-      case 0: printf("   |"); break;
-      default: printf(" "); textoColorido(matriz[i][j].altura, matriz[i][j].jogador); printf(" |"); break;
-      }
-    }
-    printf("\n  ---------------------\n");
-  }
-  logica(matriz, jogadorAtual);
-}
-
-void mostrarTabuleiro(struct tab matriz[Tam][Tam]){
-  limparTela();
-  printf("    1   2   3   4   5 ");
-  printf("\n  ---------------------\n");
-  for (int i = 0; i < Tam; i++){
-    switch (i){
-      case 0: printf("A |"); break;
-      case 1: printf("B |"); break;
-      case 2: printf("C |"); break;
-      case 3: printf("D |"); break;
-      case 4: printf("E |"); break;
-    } 
-    for (int j = 0; j < Tam; j++){
-      switch (matriz[i][j].altura){
-      case 0: printf("   |"); break;
-      default: printf(" "); textoColorido(matriz[i][j].altura, matriz[i][j].jogador); printf(" |"); break;
-      }
-    }
-    printf("\n  ---------------------\n");
-  }
-}
-
-void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
-  if (fimPartida(matriz)){
-    getch();
-    limparTela();
-    verificarVencedor(matriz);
-    getch();
-  } else {
-    if (jogadorEmJogo(matriz, jogadorAtual)){
-    char texto[2];
-    int pos[2];
-    do{
-      limparTela();
-      mostrarTabuleiro(matriz);
-      printf("\nVez do jogador "); textoColorido(jogadorAtual+1, jogadorAtual);
-      printf("\nEscolha uma peca SUA para mover! (Ex.: a3): ");
-      scanf("%s", &texto);
-      posicaoMatriz(texto, pos);
-    } while (matriz[pos[0]][pos[1]].jogador != jogadorAtual && pos[0] == 5 && pos[1] == 5);
-    printf("peca selecionada: "); textoColorido(matriz[pos[0]][pos[1]].altura,matriz[pos[0]][pos[1]].jogador);
-    if (validaPeca(matriz, pos)){
-      printf("\n  7   8   9 \n   \\  ^  / \n 4 <  "); textoColorido(matriz[pos[0]][pos[1]].altura,matriz[pos[0]][pos[1]].jogador); printf("  > 6 \n   /  v  \\ \n  1   2   3 ");
-      int mov;
-      printf("\nAgora, utilizando o teclado numerico escolha uma direcao VALIDA para ir:\t");
-      scanf("%d", &mov);
-      getchar();
-      while (validaMov(matriz, pos, mov) == 0){
-        printf("\nEscolha uma direcao VALIDA para ir:\t");
-        scanf("%d", &mov);
-        getchar();
-      }
-      MoverPeca(matriz, pos, mov);
-      jogadorAtual = trocaTurno(jogadorAtual);
-      exibeTabuleiro(matriz, jogadorAtual);
-    } else {
-      printf("\nImpossivel mecher essa peca");
-      getch();
-      logica(matriz, jogadorAtual);
-    }
-    } else {
-    printf("\nJogador %d sem pecas", (jogadorAtual+1));
-    getch();
-    jogadorAtual = trocaTurno(jogadorAtual);
-    exibeTabuleiro(matriz, jogadorAtual);
-    }
-  }
-}
-
 void verificarVencedor(struct tab matriz[Tam][Tam]){
   int placar[4] = {0, 0, 0, 0};
   for (int i = 0; i < 4; i++){
@@ -411,6 +319,98 @@ void MoverPeca(struct tab matriz[Tam][Tam], int pos[2], int mov){
       matriz[pos[0]][pos[1]].jogador = 4;
       matriz[pos[0]][pos[1]].altura = 0;
     } break;
+  }
+}
+
+void exibeTabuleiro(struct tab matriz[Tam][Tam], int jogadorAtual){
+  limparTela();
+  printf("    1   2   3   4   5 ");
+  printf("\n  ---------------------\n");
+  for (int i = 0; i < Tam; i++){
+    switch (i){
+      case 0: printf("A |"); break;
+      case 1: printf("B |"); break;
+      case 2: printf("C |"); break;
+      case 3: printf("D |"); break;
+      case 4: printf("E |"); break;
+    } 
+    for (int j = 0; j < Tam; j++){
+      switch (matriz[i][j].altura){
+      case 0: printf("   |"); break;
+      default: printf(" "); textoColorido(matriz[i][j].altura, matriz[i][j].jogador); printf(" |"); break;
+      }
+    }
+    printf("\n  ---------------------\n");
+  }
+  logica(matriz, jogadorAtual);
+}
+
+void mostrarTabuleiro(struct tab matriz[Tam][Tam]){
+  limparTela();
+  printf("    1   2   3   4   5 ");
+  printf("\n  ---------------------\n");
+  for (int i = 0; i < Tam; i++){
+    switch (i){
+      case 0: printf("A |"); break;
+      case 1: printf("B |"); break;
+      case 2: printf("C |"); break;
+      case 3: printf("D |"); break;
+      case 4: printf("E |"); break;
+    } 
+    for (int j = 0; j < Tam; j++){
+      switch (matriz[i][j].altura){
+      case 0: printf("   |"); break;
+      default: printf(" "); textoColorido(matriz[i][j].altura, matriz[i][j].jogador); printf(" |"); break;
+      }
+    }
+    printf("\n  ---------------------\n");
+  }
+}
+
+void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
+  if (fimPartida(matriz)){
+    getch();
+    limparTela();
+    verificarVencedor(matriz);
+    getch();
+  } else {
+    if (jogadorEmJogo(matriz, jogadorAtual)){
+    char texto[2];
+    int pos[2];
+    do{
+      limparTela();
+      mostrarTabuleiro(matriz);
+      printf("\nVez do jogador "); textoColorido(jogadorAtual+1, jogadorAtual);
+      printf("\nEscolha uma peca SUA para mover! (Ex.: a3): ");
+      scanf("%s", &texto);
+      posicaoMatriz(texto, pos);
+    } while (matriz[pos[0]][pos[1]].jogador != jogadorAtual && pos[0] == 5 && pos[1] == 5);
+    printf("peca selecionada: "); textoColorido(matriz[pos[0]][pos[1]].altura,matriz[pos[0]][pos[1]].jogador);
+    if (validaPeca(matriz, pos)){
+      printf("\n  7   8   9 \n   \\  ^  / \n 4 <  "); textoColorido(matriz[pos[0]][pos[1]].altura,matriz[pos[0]][pos[1]].jogador); printf("  > 6 \n   /  v  \\ \n  1   2   3 ");
+      int mov;
+      printf("\nAgora, utilizando o teclado numerico escolha uma direcao VALIDA para ir:\t");
+      scanf("%d", &mov);
+      getchar();
+      while (validaMov(matriz, pos, mov) == 0){
+        printf("\nEscolha uma direcao VALIDA para ir:\t");
+        scanf("%d", &mov);
+        getchar();
+      }
+      MoverPeca(matriz, pos, mov);
+      jogadorAtual = trocaTurno(jogadorAtual);
+      exibeTabuleiro(matriz, jogadorAtual);
+    } else {
+      printf("\nImpossivel mecher essa peca");
+      getch();
+      logica(matriz, jogadorAtual);
+    }
+    } else {
+    printf("\nJogador %d sem pecas", (jogadorAtual+1));
+    getch();
+    jogadorAtual = trocaTurno(jogadorAtual);
+    exibeTabuleiro(matriz, jogadorAtual);
+    }
   }
 }
 
