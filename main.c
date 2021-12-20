@@ -157,7 +157,12 @@ void mostrarTabuleiro(struct tab matriz[Tam][Tam]){
 }
 
 void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
-  if (jogadorEmJogo(matriz, jogadorAtual)){
+  if (fimPartida(matriz)){
+    getch();
+    limparTela();
+    printf("A partida acabou");
+  } else {
+    if (jogadorEmJogo(matriz, jogadorAtual)){
     char texto[2];
     int pos[2];
     do{
@@ -186,34 +191,39 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
       getch();
       logica(matriz, jogadorAtual);
     }
-  } else {
+    } else {
     printf("\nJogador %d sem pecas", (jogadorAtual+1));
     getch();
     jogadorAtual = trocaTurno(jogadorAtual);
     exibeTabuleiro(matriz, jogadorAtual);
+    }
   }
 }
 
 int jogadorEmJogo(struct tab matriz[Tam][Tam], int jogadorAtual){
-  int pos[2];
+  int pos[2], qtdMov = 0;
   for (int i = 0; i < Tam; i++){
     for (int j = 0; j < Tam; j++){
       if (matriz[i][j].jogador == jogadorAtual){
         pos[0] = i;
         pos[1] = j;
         if (validaPeca(matriz, pos)){
-          return 1;
+          qtdMov++;
         }
       }
     }
   }
-  return 0;
+  if (qtdMov > 0){
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 int fimPartida(struct tab matriz[Tam][Tam]){
   int pos[2], pecasEmJogo = 0;
   for (int i = 0; i < Tam; i++){
-    for (int j = 0; j < Tam; i++){
+    for (int j = 0; j < Tam; j++){
       pos[0] = i;
       pos[1] = j;
       if (validaPeca(matriz, pos)){
@@ -222,9 +232,9 @@ int fimPartida(struct tab matriz[Tam][Tam]){
     }
   }
   if (pecasEmJogo > 0){
-    return 1;
-  } else {
     return 0;
+  } else {
+    return 1;
   }
 }
 
