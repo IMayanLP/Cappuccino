@@ -160,7 +160,8 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
   if (fimPartida(matriz)){
     getch();
     limparTela();
-    printf("A partida acabou");
+    verificarVencedor(matriz);
+    getch();
   } else {
     if (jogadorEmJogo(matriz, jogadorAtual)){
     char texto[2];
@@ -200,6 +201,24 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
   }
 }
 
+void verificarVencedor(struct tab matriz[Tam][Tam]){
+  int placar[4] = {0, 0, 0, 0};
+  for (int i = 0; i < 4; i++){
+    for (int j = 0; j < Tam; j++){
+      for (int k = 0; k < Tam; k++){
+        if (matriz[j][k].jogador == i){
+          placar[i] = placar[i] + matriz[j][k].altura;
+        }
+      }
+    }
+  }
+
+  printf("Placar:\n");
+  for (int i = 0; i < 4; i++){
+    printf("jogador %d: %d\n", i+1, placar[i]);
+  }
+}
+
 int jogadorEmJogo(struct tab matriz[Tam][Tam], int jogadorAtual){
   int pos[2], pecasEmJogo = 0;
   for (int i = 0; i < Tam; i++){
@@ -213,8 +232,7 @@ int jogadorEmJogo(struct tab matriz[Tam][Tam], int jogadorAtual){
       }
     }
   }
-  printf("%d pecas em jogo do jogador %d", pecasEmJogo, jogadorAtual+1);
-  getch();
+  //printf("%d pecas em jogo do jogador %d", pecasEmJogo, jogadorAtual+1);
   if (pecasEmJogo > 0){
     return 1;
   } else {
@@ -397,7 +415,7 @@ int main(void){
 
   do{
     limparTela();
-    printf("-=-=-=-=-=-=-=-=-=-=-\n1 - Jogar\n2 - Regras\n3 - Sair\n-=-=-=-=-=-=-=-=-=-=-\nO que deseja fazer?\t");
+    printf("-=-=-=-=-=-=-=-=-=-=-\n1 - Jogar\n2 - Regras\n3 - Requisitos minimos\n4 - Sair\n-=-=-=-=-=-=-=-=-=-=-\nO que deseja fazer?\t");
     scanf("%d", &menu);
     if (menu == 1){
       iniciarJogo(tabuleiro, player, jogadorAtual);
@@ -405,7 +423,10 @@ int main(void){
     } else if (menu == 2){
       printf("2");
       getch();
-    } else if (menu == 3){
+    } else if(menu == 3){
+      printf("3");
+      getch();
+    } else if (menu == 4){
       break;
     } else {
       menu = 1;
