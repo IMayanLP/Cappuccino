@@ -201,19 +201,21 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
 }
 
 int jogadorEmJogo(struct tab matriz[Tam][Tam], int jogadorAtual){
-  int pos[2], qtdMov = 0;
+  int pos[2], pecasEmJogo = 0;
   for (int i = 0; i < Tam; i++){
     for (int j = 0; j < Tam; j++){
       if (matriz[i][j].jogador == jogadorAtual){
         pos[0] = i;
         pos[1] = j;
         if (validaPeca(matriz, pos)){
-          qtdMov++;
+          pecasEmJogo++;
         }
       }
     }
   }
-  if (qtdMov > 0){
+  printf("%d pecas em jogo do jogador %d", pecasEmJogo, jogadorAtual+1);
+  getch();
+  if (pecasEmJogo > 0){
     return 1;
   } else {
     return 0;
@@ -268,15 +270,14 @@ void posicaoMatriz(char texto[], int pos[]){
 
 int validaPeca(struct tab matriz[Tam][Tam], int pos[2]){
   int qtdMov = 0;
-  if (matriz[pos[0]-1][pos[1]-1].altura >= 1 && (matriz[pos[0]-1][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura)) qtdMov++;
-  if (matriz[pos[0]-1][pos[1]].altura >= 1 && (matriz[pos[0]-1][pos[1]].altura <= matriz[pos[0]][pos[1]].altura)) qtdMov++;
-  if (matriz[pos[0]-1][pos[1]+1].altura >= 1 && (matriz[pos[0]-1][pos[1]+1].altura <= matriz[pos[0]][pos[1]].altura)) qtdMov++;
-  if (matriz[pos[0]][pos[1]-1].altura >= 1 && (matriz[pos[0]][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura)) qtdMov++;
-  if (matriz[pos[0]][pos[1]+1].altura >= 1 && (matriz[pos[0]][pos[1]+1].altura <= matriz[pos[0]][pos[1]].altura)) qtdMov++;
-  if (matriz[pos[0]+1][pos[1]-1].altura >= 1 && (matriz[pos[0]+1][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura)) qtdMov++;
-  if (matriz[pos[0]+1][pos[1]].altura >= 1 && (matriz[pos[0]+1][pos[1]].altura <= matriz[pos[0]][pos[1]].altura)) qtdMov++;
-  if (matriz[pos[0]+1][pos[1]+1].altura >= 1 && (matriz[pos[0]+1][pos[1]+1].altura <= matriz[pos[0]][pos[1]].altura)) qtdMov++;
-
+  if (matriz[pos[0]-1][pos[1]-1].altura >= 1 && (matriz[pos[0]-1][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]-1 < 5 && pos[0]-1 >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 5)) qtdMov++;
+  if (matriz[pos[0]-1][pos[1]].altura >= 1 && (matriz[pos[0]-1][pos[1]].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]-1 < 5 && pos[0]-1 >= 0) && (pos[1] >= 0 && pos[1] < 5)) qtdMov++;
+  if (matriz[pos[0]-1][pos[1]+1].altura >= 1 && (matriz[pos[0]-1][pos[1]+1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]-1 < 5 && pos[0]-1 >= 0) && (pos[1]+1 >= 0 && pos[1]+1 < 5)) qtdMov++;
+  if (matriz[pos[0]][pos[1]-1].altura >= 1 && (matriz[pos[0]][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0] < 5 && pos[0] >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 5)) qtdMov++;
+  if (matriz[pos[0]][pos[1]+1].altura >= 1 && (matriz[pos[0]][pos[1]+1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0] < 5 && pos[0] >= 0) && (pos[1]+1 >= 0 && pos[1]+1 < 5)) qtdMov++;
+  if (matriz[pos[0]+1][pos[1]-1].altura >= 1 && (matriz[pos[0]+1][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]+1 <= 5 && pos[0]+1 >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 5)) qtdMov++;
+  if (matriz[pos[0]+1][pos[1]].altura >= 1 && (matriz[pos[0]+1][pos[1]].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]+1 < 5 && pos[0]+1 >= 0) && (pos[1] >= 0 && pos[1] < 5)) qtdMov++;
+  if (matriz[pos[0]+1][pos[1]+1].altura >= 1 && (matriz[pos[0]+1][pos[1]+1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]+1 < 5 && pos[0]+1 >= 0) && (pos[1]+1 >= 0 && pos[1]+1 < 5)) qtdMov++;
   if (qtdMov>0){
     return 1;
   } else {
@@ -287,7 +288,7 @@ int validaPeca(struct tab matriz[Tam][Tam], int pos[2]){
 int validaMov(struct tab matriz[Tam][Tam], int pos[2], int mov){
   switch (mov){
   case 1:
-    if (matriz[pos[0]+1][pos[1]-1].altura > 0 && (matriz[pos[0]+1][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]+1 < 5 && pos[0]+1 >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 5)){
+    if (matriz[pos[0]+1][pos[1]-1].altura > 0 && (matriz[pos[0]+1][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]+1 <= 5 && pos[0]+1 >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 5)){
       return 1;
     }
     break;
