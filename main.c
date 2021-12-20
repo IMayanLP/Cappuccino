@@ -173,16 +173,18 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
       printf("\nEscolha uma peca SUA para mover! (Ex.: a3): ");
       scanf("%s", &texto);
       posicaoMatriz(texto, pos);
-    } while (matriz[pos[0]][pos[1]].jogador != jogadorAtual);
+    } while (matriz[pos[0]][pos[1]].jogador != jogadorAtual && pos[0] == 5 && pos[1] == 5);
     printf("peca selecionada: "); textoColorido(matriz[pos[0]][pos[1]].altura,matriz[pos[0]][pos[1]].jogador);
     if (validaPeca(matriz, pos)){
       printf("\n  7   8   9 \n   \\  ^  / \n 4 <  "); textoColorido(matriz[pos[0]][pos[1]].altura,matriz[pos[0]][pos[1]].jogador); printf("  > 6 \n   /  v  \\ \n  1   2   3 ");
       int mov;
       printf("\nAgora, utilizando o teclado numerico escolha uma direcao VALIDA para ir:\t");
       scanf("%d", &mov);
+      getchar();
       while (validaMov(matriz, pos, mov) == 0){
         printf("\nEscolha uma direcao VALIDA para ir:\t");
         scanf("%d", &mov);
+        getchar();
       }
       MoverPeca(matriz, pos, mov);
       jogadorAtual = trocaTurno(jogadorAtual);
@@ -213,7 +215,15 @@ void verificarVencedor(struct tab matriz[Tam][Tam]){
     }
   }
 
-  printf("Placar:\n");
+  int maior = placar[0], vencedor = 0;
+    for (int i = 0; i < 4; i++){
+        if (placar[i] >= maior){
+            maior = placar[i];
+            vencedor = i;
+        }
+    }
+
+  printf("Vencedor: %d\n\nPlacar total:\n", vencedor+1);
   for (int i = 0; i < 4; i++){
     printf("jogador %d: %d\n", i+1, placar[i]);
   }
@@ -232,7 +242,7 @@ int jogadorEmJogo(struct tab matriz[Tam][Tam], int jogadorAtual){
       }
     }
   }
-  //printf("%d pecas em jogo do jogador %d", pecasEmJogo, jogadorAtual+1);
+  
   if (pecasEmJogo > 0){
     return 1;
   } else {
@@ -288,12 +298,12 @@ void posicaoMatriz(char texto[], int pos[]){
 
 int validaPeca(struct tab matriz[Tam][Tam], int pos[2]){
   int qtdMov = 0;
-  if (matriz[pos[0]-1][pos[1]-1].altura >= 1 && (matriz[pos[0]-1][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]-1 < 5 && pos[0]-1 >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 5)) qtdMov++;
+  if (matriz[pos[0]-1][pos[1]-1].altura >= 1 && (matriz[pos[0]-1][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]-1 < 4 && pos[0]-1 >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 4)) qtdMov++;
   if (matriz[pos[0]-1][pos[1]].altura >= 1 && (matriz[pos[0]-1][pos[1]].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]-1 < 5 && pos[0]-1 >= 0) && (pos[1] >= 0 && pos[1] < 5)) qtdMov++;
   if (matriz[pos[0]-1][pos[1]+1].altura >= 1 && (matriz[pos[0]-1][pos[1]+1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]-1 < 5 && pos[0]-1 >= 0) && (pos[1]+1 >= 0 && pos[1]+1 < 5)) qtdMov++;
-  if (matriz[pos[0]][pos[1]-1].altura >= 1 && (matriz[pos[0]][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0] < 5 && pos[0] >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 5)) qtdMov++;
+  if (matriz[pos[0]][pos[1]-1].altura >= 1 && (matriz[pos[0]][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0] < 5 && pos[0] >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 4)) qtdMov++;
   if (matriz[pos[0]][pos[1]+1].altura >= 1 && (matriz[pos[0]][pos[1]+1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0] < 5 && pos[0] >= 0) && (pos[1]+1 >= 0 && pos[1]+1 < 5)) qtdMov++;
-  if (matriz[pos[0]+1][pos[1]-1].altura >= 1 && (matriz[pos[0]+1][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]+1 <= 5 && pos[0]+1 >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 5)) qtdMov++;
+  if (matriz[pos[0]+1][pos[1]-1].altura >= 1 && (matriz[pos[0]+1][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]+1 <= 5 && pos[0]+1 >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 4)) qtdMov++;
   if (matriz[pos[0]+1][pos[1]].altura >= 1 && (matriz[pos[0]+1][pos[1]].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]+1 < 5 && pos[0]+1 >= 0) && (pos[1] >= 0 && pos[1] < 5)) qtdMov++;
   if (matriz[pos[0]+1][pos[1]+1].altura >= 1 && (matriz[pos[0]+1][pos[1]+1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]+1 < 5 && pos[0]+1 >= 0) && (pos[1]+1 >= 0 && pos[1]+1 < 5)) qtdMov++;
   if (qtdMov>0){
@@ -417,6 +427,7 @@ int main(void){
     limparTela();
     printf("-=-=-=-=-=-=-=-=-=-=-\n1 - Jogar\n2 - Regras\n3 - Requisitos minimos\n4 - Sair\n-=-=-=-=-=-=-=-=-=-=-\nO que deseja fazer?\t");
     scanf("%d", &menu);
+    getchar();
     if (menu == 1){
       iniciarJogo(tabuleiro, player, jogadorAtual);
       getch();
