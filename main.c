@@ -13,11 +13,13 @@
 // Definindo tamanho do tabuleiro como constante
 #define Tam         5
 
+// Struct que sera usado no tabuleiro
 struct tab{
   int altura;
   int jogador;
 };
 
+// Essa função inicia o jogo e chama todas as outras funções necessarias em ordem
 void iniciarJogo(struct tab matriz[Tam][Tam], int player[4][5], int jogadorAtual){
   jogadorAtual = 0;
   gerarPlayers(player);
@@ -25,6 +27,7 @@ void iniciarJogo(struct tab matriz[Tam][Tam], int player[4][5], int jogadorAtual
   exibeTabuleiro(matriz, jogadorAtual);
 }
 
+// Texto coloridinho, obrigado Roberto
 void textoColorido(int texto, int jogador) {
     HANDLE hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -38,18 +41,22 @@ void textoColorido(int texto, int jogador) {
     SetConsoleTextAttribute(hConsole, CORPADRAO);
 }
 
+// Limpa tela
 void limparTela(){
     system("cls");
 }
 
+// Eu sei que num = rand() % 4 já gera um número entre 0 e 4 mas fiz essa função pq vai que eu preciso
+// de outros numeros aleatórios, ai ja posso botar logo o intervalo que eu quiser (PS.: não precisei)
 int gerarNum(int x,int y){
     int num;
     do{
-        num = rand() % 4;  
+        num = rand() % 10;
     }while(num < x || num > y);
     return num;
 }
 
+// Essa função faz uma matriz de players onde a linha 0 (player 1) é preenchida com 0 (id do player 1), etc...
 void gerarPlayers(int a[4][5]){
   for (int i = 0; i < 4; i++){
     for (int j = 0; j < 5; j++){
@@ -71,6 +78,7 @@ void gerarPlayers(int a[4][5]){
   }
 }
 
+// Essa função gera o tabuleiro, embaralha e deixa tudo pronto pra jogar
 void gerarTabuleiro(struct tab matriz[Tam][Tam], int player[4][5]){
   int pecas[20], count=0;
     for (int i = 0; i < 4; i++){
@@ -112,6 +120,7 @@ void gerarTabuleiro(struct tab matriz[Tam][Tam], int player[4][5]){
   }
 }
 
+// Essa função converte texto em uma posição acessível para a matriz (Ex.: "a3" -> {0, 2})
 void posicaoMatriz(char texto[], int pos[]){
     switch (texto[0]){
       case 'A': case 'a': pos[0] = 0; break;
@@ -131,6 +140,7 @@ void posicaoMatriz(char texto[], int pos[]){
     }
 }
 
+// Essa função retorna 0 ou 1 para se a peça selecionada é válida ou não (tem movimentos possíveis ao redor)
 int validaPeca(struct tab matriz[Tam][Tam], int pos[2]){
   int qtdMov = 0;
   if (matriz[pos[0]-1][pos[1]-1].altura >= 1 && (matriz[pos[0]-1][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]-1 < 4 && pos[0]-1 >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 4)) qtdMov++;
@@ -148,9 +158,11 @@ int validaPeca(struct tab matriz[Tam][Tam], int pos[2]){
   }
 }
 
+// Essa função retorna 0 ou 1 para se o movimento escolhido pelo jogador é válido
 int validaMov(struct tab matriz[Tam][Tam], int pos[2], int mov){
   switch (mov){
   case 1:
+    // cada um desses if verifica se a altura do destino é maior que 0, menor que a peça escolhida e se está dentro do tabuleiro
     if (matriz[pos[0]+1][pos[1]-1].altura > 0 && (matriz[pos[0]+1][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]+1 <= 5 && pos[0]+1 >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 5)){
       return 1;
     }
@@ -187,6 +199,7 @@ int validaMov(struct tab matriz[Tam][Tam], int pos[2], int mov){
   return 0;
 }
 
+// Essa função percorre o tabuleiro verificando se o jogador atual tem peças suas que ainda são validas para jogo (Eu sei que não precisava da variavel "pecasEmJogo" e dava pra fazer mais facil, mas eu botei pra por um printf e poder ver se ta funcionando 100% ai to com preguiça de mudar, dx assim mesmo)
 int jogadorEmJogo(struct tab matriz[Tam][Tam], int jogadorAtual){
   int pos[2], pecasEmJogo = 0;
   for (int i = 0; i < Tam; i++){
@@ -208,6 +221,7 @@ int jogadorEmJogo(struct tab matriz[Tam][Tam], int jogadorAtual){
   }
 }
 
+// Essa função move uma peça após ela ter sido validada e o movimento aprovado
 void MoverPeca(struct tab matriz[Tam][Tam], int pos[2], int mov){
   switch (mov){
   case 1:
@@ -270,6 +284,7 @@ void MoverPeca(struct tab matriz[Tam][Tam], int pos[2], int mov){
   }
 }
 
+// Essa função faz a troca de turnos bem autoexplicativo
 int trocaTurno(int jogadorAtual){
   if (jogadorAtual >= 3){
     jogadorAtual = 0;
@@ -279,6 +294,7 @@ int trocaTurno(int jogadorAtual){
   return jogadorAtual;
 }
 
+// Essa função exibe o tabuleiro
 void mostrarTabuleiro(struct tab matriz[Tam][Tam]){
   limparTela();
   printf("    1   2   3   4   5 ");
@@ -301,6 +317,7 @@ void mostrarTabuleiro(struct tab matriz[Tam][Tam]){
   }
 }
 
+// Essa função verifica o fim da partida
 int fimPartida(struct tab matriz[Tam][Tam]){
   int pos[2], pecasEmJogo = 0;
   for (int i = 0; i < Tam; i++){
@@ -319,6 +336,7 @@ int fimPartida(struct tab matriz[Tam][Tam]){
   }
 }
 
+// Caso a partida tenha chegado ao fim, essa função me diz o vencedor e o placar
 void verificarVencedor(struct tab matriz[Tam][Tam]){
   int placar[4] = {0, 0, 0, 0};
   for (int i = 0; i < 4; i++){
@@ -346,6 +364,7 @@ void verificarVencedor(struct tab matriz[Tam][Tam]){
   printf("Pressione Enter para ser redirecionado ao menu");
 }
 
+// Essa função é igual a mostrarTabuleiro a unica diferença é que no final eu chamo a logica() pra fazer um loop para rodar o jogo, a outra eu uso quando vou dar um CLS pq se eu chamar essa aqui ela reseta a lógica.
 void exibeTabuleiro(struct tab matriz[Tam][Tam], int jogadorAtual){
   limparTela();
   printf("    1   2   3   4   5 ");
@@ -369,6 +388,7 @@ void exibeTabuleiro(struct tab matriz[Tam][Tam], int jogadorAtual){
   logica(matriz, jogadorAtual);
 }
 
+// Essa função é a lógica no jogo e no final chama a exibeTabuleiro() para fazer um loop para rodar o jogo
 void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
   if (fimPartida(matriz)){
     getch();
@@ -416,8 +436,9 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
   }
 }
 
+// Função main normal, sem segredo, só a main mesmo
 int main(void){
-  //setLocale no meu VSCode nao funciona, essa parada ai deu certo
+  //setLocale no meu VSCode nao funciona, essa parada ai deu certo, obrigado stackOverflow
   SetConsoleOutputCP(65001);
 
   srand(time(NULL));
