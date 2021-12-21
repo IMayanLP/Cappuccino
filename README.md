@@ -2,7 +2,7 @@
 Jogo Cappuccino em C como projeto para disciplina de introdução a programação
 
 # Sobre
-Cappuccino é um jogo abstrato para quatro jogadores cujo objetivo é ter a maior\nquantidade de pilhas sobre seu domínio ao final da partida.
+Cappuccino é um jogo abstrato para quatro jogadores cujo objetivo é ter a maior quantidade de pilhas sobre seu domínio ao final da partida.
 Esse objetivo é alcançado empilhando peças durante a partida.
 Cada Jogador começa com 5 peças sendo elas posicionadas aleatoriamente no tabuleiro 5x5.
 
