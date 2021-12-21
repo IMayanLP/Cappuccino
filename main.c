@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <locale.h>
 #include <time.h>
 #include <windows.h>
 // Definindo cores
@@ -44,7 +45,7 @@ void limparTela(){
 int gerarNum(int x,int y){
     int num;
     do{
-        num = rand() % 10;  
+        num = rand() % 4;  
     }while(num < x || num > y);
     return num;
 }
@@ -109,80 +110,6 @@ void gerarTabuleiro(struct tab matriz[Tam][Tam], int player[4][5]){
       }
     }
   }
-}
-
-void verificarVencedor(struct tab matriz[Tam][Tam]){
-  int placar[4] = {0, 0, 0, 0};
-  for (int i = 0; i < 4; i++){
-    for (int j = 0; j < Tam; j++){
-      for (int k = 0; k < Tam; k++){
-        if (matriz[j][k].jogador == i){
-          placar[i] = placar[i] + matriz[j][k].altura;
-        }
-      }
-    }
-  }
-
-  int maior = placar[0], vencedor = 0;
-    for (int i = 0; i < 4; i++){
-        if (placar[i] >= maior){
-            maior = placar[i];
-            vencedor = i;
-        }
-    }
-
-  printf("Vencedor: %d\n\nPlacar total:\n", vencedor+1);
-  for (int i = 0; i < 4; i++){
-    printf("jogador %d: %d\n", i+1, placar[i]);
-  }
-}
-
-int jogadorEmJogo(struct tab matriz[Tam][Tam], int jogadorAtual){
-  int pos[2], pecasEmJogo = 0;
-  for (int i = 0; i < Tam; i++){
-    for (int j = 0; j < Tam; j++){
-      if (matriz[i][j].jogador == jogadorAtual){
-        pos[0] = i;
-        pos[1] = j;
-        if (validaPeca(matriz, pos)){
-          pecasEmJogo++;
-        }
-      }
-    }
-  }
-  
-  if (pecasEmJogo > 0){
-    return 1;
-  } else {
-    return 0;
-  }
-}
-
-int fimPartida(struct tab matriz[Tam][Tam]){
-  int pos[2], pecasEmJogo = 0;
-  for (int i = 0; i < Tam; i++){
-    for (int j = 0; j < Tam; j++){
-      pos[0] = i;
-      pos[1] = j;
-      if (validaPeca(matriz, pos)){
-        pecasEmJogo++;
-      }
-    }
-  }
-  if (pecasEmJogo > 0){
-    return 0;
-  } else {
-    return 1;
-  }
-}
-
-int trocaTurno(int jogadorAtual){
-  if (jogadorAtual >= 3){
-    jogadorAtual = 0;
-  } else {
-    jogadorAtual++;
-  }
-  return jogadorAtual;
 }
 
 void posicaoMatriz(char texto[], int pos[]){
@@ -260,6 +187,27 @@ int validaMov(struct tab matriz[Tam][Tam], int pos[2], int mov){
   return 0;
 }
 
+int jogadorEmJogo(struct tab matriz[Tam][Tam], int jogadorAtual){
+  int pos[2], pecasEmJogo = 0;
+  for (int i = 0; i < Tam; i++){
+    for (int j = 0; j < Tam; j++){
+      if (matriz[i][j].jogador == jogadorAtual){
+        pos[0] = i;
+        pos[1] = j;
+        if (validaPeca(matriz, pos)){
+          pecasEmJogo++;
+        }
+      }
+    }
+  }
+  
+  if (pecasEmJogo > 0){
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
 void MoverPeca(struct tab matriz[Tam][Tam], int pos[2], int mov){
   switch (mov){
   case 1:
@@ -322,27 +270,13 @@ void MoverPeca(struct tab matriz[Tam][Tam], int pos[2], int mov){
   }
 }
 
-void exibeTabuleiro(struct tab matriz[Tam][Tam], int jogadorAtual){
-  limparTela();
-  printf("    1   2   3   4   5 ");
-  printf("\n  ---------------------\n");
-  for (int i = 0; i < Tam; i++){
-    switch (i){
-      case 0: printf("A |"); break;
-      case 1: printf("B |"); break;
-      case 2: printf("C |"); break;
-      case 3: printf("D |"); break;
-      case 4: printf("E |"); break;
-    } 
-    for (int j = 0; j < Tam; j++){
-      switch (matriz[i][j].altura){
-      case 0: printf("   |"); break;
-      default: printf(" "); textoColorido(matriz[i][j].altura, matriz[i][j].jogador); printf(" |"); break;
-      }
-    }
-    printf("\n  ---------------------\n");
+int trocaTurno(int jogadorAtual){
+  if (jogadorAtual >= 3){
+    jogadorAtual = 0;
+  } else {
+    jogadorAtual++;
   }
-  logica(matriz, jogadorAtual);
+  return jogadorAtual;
 }
 
 void mostrarTabuleiro(struct tab matriz[Tam][Tam]){
@@ -367,6 +301,74 @@ void mostrarTabuleiro(struct tab matriz[Tam][Tam]){
   }
 }
 
+int fimPartida(struct tab matriz[Tam][Tam]){
+  int pos[2], pecasEmJogo = 0;
+  for (int i = 0; i < Tam; i++){
+    for (int j = 0; j < Tam; j++){
+      pos[0] = i;
+      pos[1] = j;
+      if (validaPeca(matriz, pos)){
+        pecasEmJogo++;
+      }
+    }
+  }
+  if (pecasEmJogo > 0){
+    return 0;
+  } else {
+    return 1;
+  }
+}
+
+void verificarVencedor(struct tab matriz[Tam][Tam]){
+  int placar[4] = {0, 0, 0, 0};
+  for (int i = 0; i < 4; i++){
+    for (int j = 0; j < Tam; j++){
+      for (int k = 0; k < Tam; k++){
+        if (matriz[j][k].jogador == i){
+          placar[i] = placar[i] + matriz[j][k].altura;
+        }
+      }
+    }
+  }
+
+  int maior = placar[0], vencedor = 0;
+    for (int i = 0; i < 4; i++){
+        if (placar[i] >= maior){
+            maior = placar[i];
+            vencedor = i;
+        }
+    }
+
+  printf("Vencedor:\njogador"); textoColorido(vencedor+1, vencedor); printf("\n\nPlacar total:\n");
+  for (int i = 0; i < 4; i++){
+    printf("jogador "); textoColorido(i+1, i); printf(": %d\n", placar[i]);
+  }
+  printf("Pressione Enter para ser redirecionado ao menu");
+}
+
+void exibeTabuleiro(struct tab matriz[Tam][Tam], int jogadorAtual){
+  limparTela();
+  printf("    1   2   3   4   5 ");
+  printf("\n  ---------------------\n");
+  for (int i = 0; i < Tam; i++){
+    switch (i){
+      case 0: printf("A |"); break;
+      case 1: printf("B |"); break;
+      case 2: printf("C |"); break;
+      case 3: printf("D |"); break;
+      case 4: printf("E |"); break;
+    } 
+    for (int j = 0; j < Tam; j++){
+      switch (matriz[i][j].altura){
+      case 0: printf("   |"); break;
+      default: printf(" "); textoColorido(matriz[i][j].altura, matriz[i][j].jogador); printf(" |"); break;
+      }
+    }
+    printf("\n  ---------------------\n");
+  }
+  logica(matriz, jogadorAtual);
+}
+
 void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
   if (fimPartida(matriz)){
     getch();
@@ -384,7 +386,7 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
       printf("\nEscolha uma peca SUA para mover! (Ex.: a3): ");
       scanf("%s", &texto);
       posicaoMatriz(texto, pos);
-    } while (matriz[pos[0]][pos[1]].jogador != jogadorAtual && pos[0] == 5 && pos[1] == 5);
+    } while (matriz[pos[0]][pos[1]].jogador != jogadorAtual);
     printf("peca selecionada: "); textoColorido(matriz[pos[0]][pos[1]].altura,matriz[pos[0]][pos[1]].jogador);
     if (validaPeca(matriz, pos)){
       printf("\n  7   8   9 \n   \\  ^  / \n 4 <  "); textoColorido(matriz[pos[0]][pos[1]].altura,matriz[pos[0]][pos[1]].jogador); printf("  > 6 \n   /  v  \\ \n  1   2   3 ");
@@ -406,7 +408,7 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
       logica(matriz, jogadorAtual);
     }
     } else {
-    printf("\nJogador %d sem pecas", (jogadorAtual+1));
+    printf("\nJogador "); textoColorido(jogadorAtual+1, jogadorAtual); printf(" sem peças");
     getch();
     jogadorAtual = trocaTurno(jogadorAtual);
     exibeTabuleiro(matriz, jogadorAtual);
@@ -415,6 +417,9 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
 }
 
 int main(void){
+  //setLocale no meu VSCode nao funciona, essa parada ai deu certo
+  SetConsoleOutputCP(65001);
+
   srand(time(NULL));
   int player[4][5];
   struct tab tabuleiro[Tam][Tam];
@@ -425,17 +430,19 @@ int main(void){
 
   do{
     limparTela();
-    printf("-=-=-=-=-=-=-=-=-=-=-\n1 - Jogar\n2 - Regras\n3 - Requisitos minimos\n4 - Sair\n-=-=-=-=-=-=-=-=-=-=-\nO que deseja fazer?\t");
+    printf("-=-=-=-=-=-=-=-=-=-=-\n1 - Jogar\n2 - Regras\n3 - Requisitos mínimos\n4 - Sair\n-=-=-=-=-=-=-=-=-=-=-\nO que deseja fazer?\t");
     scanf("%d", &menu);
     getchar();
     if (menu == 1){
       iniciarJogo(tabuleiro, player, jogadorAtual);
       getch();
     } else if (menu == 2){
-      printf("2");
+      limparTela();
+      printf("Cappuccino é um jogo abstrato para quatro jogadores cujo objetivo é ter a maior\nquantidade de pilhas sobre seu domínio ao final da partida.\nEsse objetivo é alcançado empilhando peças durante a partida.\nCada Jogador começa com 5 peças sendo elas posicionadas aleatoriamente no tabuleiro 5x5.\n\n1 - Você só pode mecher peças suas.\n2 - Uma peça só pode se mover para cima de outra peça, sendo impossível se mover para um espaço vazio.\n3 - Você só pode empilhar peças de altura menor ou igual a sua.\n4 - O fim da partida será quando restar apenas um jogador ou não houver mais movimentos possíveis.\n5 - Em caso de empate, a ordem inversa dos turnos será usada para escolher um vencedor.\n(jogador 4 tem vantagem sobre o 3, o 3 sobre o 2, etc)\n\nPressione Enter para voltar ao menu...");
       getch();
     } else if(menu == 3){
-      printf("3");
+      limparTela();
+      printf("Requisitos mínimos\n\nProcessador: Intel 4004\nPlaca de vídeo: Intel UHD Graphics 1\nMemória RAM: 2MB\nEspaço em disco: 60KB\n\nRequisitos recomendados: (ta um pouco pesado)\n\nProcessador: Ryzen 9 5950X 3.4GHz\nPlaca de vídeo: AMD Radeon RX 6900 XT\nMemória RAM: 32GB\nEspaço em disco: 1TB\n\nPressione Enter para voltar ao menu...");
       getch();
     } else if (menu == 4){
       break;
