@@ -1,6 +1,6 @@
 # Cappuccino
-Jogo Cappuccino em C como projeto para disciplina de introdução a programação
-![GIF](https://gifyu.com/image/SSkDn.gif)
+Jogo Cappuccino em C como projeto para disciplina de introdução a programação. <br /><br />
+![GIF](gifzinho.gif)
 
 # Sobre
 Cappuccino é um jogo abstrato para quatro jogadores cujo objetivo é ter a maior quantidade de pilhas sobre seu domínio ao final da partida.
@@ -13,3 +13,6 @@ Cada Jogador começa com 5 peças sendo elas posicionadas aleatoriamente no tabu
 3 - Você só pode empilhar peças de altura menor ou igual a sua. <br />
 4 - O fim da partida será quando restar apenas um jogador ou não houver mais movimentos possíveis. <br />
 5 - Em caso de empate, a ordem inversa dos turnos será usada para escolher um vencedor (jogador 4 tem vantagem sobre o 3, o 3 sobre o 2, etc). <br />
+
+# Download
+Para baixar o arquivo zip do jogo é só clicar -> [AQUI](https://github.com/IMayanLP/Cappuccino/archive/refs/heads/main.zip) <-
