@@ -357,7 +357,7 @@ void verificarVencedor(struct tab matriz[Tam][Tam]){
         }
     }
 
-  printf("Vencedor:\njogador"); textoColorido(vencedor+1, vencedor); printf("\n\nPlacar total:\n");
+  printf("Vencedor:\njogador "); textoColorido(vencedor+1, vencedor); printf("\n\nPlacar total:\n");
   for (int i = 0; i < 4; i++){
     printf("jogador "); textoColorido(i+1, i); printf(": %d\n", placar[i]);
   }
@@ -423,7 +423,7 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
       jogadorAtual = trocaTurno(jogadorAtual);
       exibeTabuleiro(matriz, jogadorAtual);
     } else {
-      printf("\nImpossivel mecher essa peca");
+      printf("\nImpossivel mover essa peca");
       getch();
       logica(matriz, jogadorAtual);
     }
