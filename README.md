@@ -1,5 +1,5 @@
 # Cappuccino
-Jogo Cappuccino em C como projeto para disciplina de introdução a programação. <br />
+Jogo Cappuccino em C como projeto para disciplina de introdução a programação. <br /><br />
 ![GIF](gifzinho.gif)
 
 # Sobre
