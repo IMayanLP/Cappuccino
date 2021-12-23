@@ -463,7 +463,7 @@ int main(void){
       getch();
     } else if(menu == 3){
       limparTela();
-      printf("Requisitos mínimos\n\nProcessador: Intel 4004\nPlaca de vídeo: Intel UHD Graphics 1\nMemória RAM: 2MB\nEspaço em disco: 60KB\n\nRequisitos recomendados: (ta um pouco pesado)\n\nProcessador: Ryzen 9 5950X 3.4GHz\nPlaca de vídeo: AMD Radeon RX 6900 XT\nMemória RAM: 32GB\nEspaço em disco: 1TB\n\nPressione Enter para voltar ao menu...");
+      printf("Requidsasdasitos mínimos\n\nProcessador: Intel 4004\nPlaca de vídeo: Intel UHD Graphics 1\nMemória RAM: 2MB\nEspaço em disco: 60KB\n\nRequisitos recomendados: (ta um pouco pesado)\n\nProcessador: Ryzen 9 5950X 3.4GHz\nPlaca de vídeo: AMD Radeon RX 6900 XT\nMemória RAM: 32GB\nEspaço em disco: 1TB\n\nPressione Enter para voltar ao menu...");
       getch();
     } else if (menu == 4){
       break;
