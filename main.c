@@ -293,17 +293,13 @@ int jogadorEmJogo(struct tab matriz[Tam][Tam], int jogadorAtual){
         pos[0] = i;
         pos[1] = j;
         if (validaPeca(matriz, pos)){
-          pecasEmJogo++;
+          return 1;
         }
       }
     }
   }
   
-  if (pecasEmJogo > 0){
-    return 1;
-  } else {
-    return 0;
-  }
+  return 0;
 }
 
 // Essa função move uma peça após ela ter sido validada e o movimento aprovado
@@ -404,21 +400,17 @@ void mostrarTabuleiro(struct tab matriz[Tam][Tam]){
 
 // Essa função verifica o fim da partida
 int fimPartida(struct tab matriz[Tam][Tam]){
-  int pos[2], pecasEmJogo = 0;
+  int pos[2];
   for (int i = 0; i < Tam; i++){
     for (int j = 0; j < Tam; j++){
       pos[0] = i;
       pos[1] = j;
       if (validaPeca(matriz, pos)){
-        pecasEmJogo++;
+        return 0;
       }
     }
   }
-  if (pecasEmJogo > 0){
-    return 0;
-  } else {
-    return 1;
-  }
+  return 1;
 }
 
 // Caso a partida tenha chegado ao fim, essa função me diz o vencedor e o placar
@@ -551,22 +543,24 @@ int main(void){
       int n = 0;
       do{
         limparTela();
-        printf("1 - Criar novo jogo\n2 - Carregar jogo\nO que deseja fazer?\t");
+        printf("1 - Criar novo jogo\n2 - Carregar jogo\nPS.: Para salvar um jogo, digite '/s' na seleção de peça, em qualquer turno\nO que deseja fazer?");
         scanf("%d", &n);
         getchar();
         if (n == 1){
           iniciarJogo(tabuleiro, player, jogadorAtual);
+          break;
           getch();
         } else if (n == 2){
           char nome[20];
           printf("Digite o nome do save: ");
           scanf("%s", &nome);
           carregarJogo(nome, tabuleiro, jogadorAtual);
+          break;
         }
       } while (n != 1 || n != 2);
     } else if (menu == 2){
       limparTela();
-      printf("Cappuccino é um jogo abstrato para quatro jogadores cujo objetivo é ter a maior\nquantidade de pilhas sobre seu domínio ao final da partida.\nEsse objetivo é alcançado empilhando peças durante a partida.\nCada Jogador começa com 5 peças sendo elas posicionadas aleatoriamente no tabuleiro 5x5.\n\n1 - Você só pode mecher peças suas.\n2 - Uma peça só pode se mover para cima de outra peça, sendo impossível se mover para um espaço vazio.\n3 - Você só pode empilhar peças de altura menor ou igual a sua.\n4 - O fim da partida será quando restar apenas um jogador ou não houver mais movimentos possíveis.\n5 - Em caso de empate, a ordem inversa dos turnos será usada para escolher um vencedor.\n(jogador 4 tem vantagem sobre o 3, o 3 sobre o 2, etc)\n\nPressione Enter para voltar ao menu...");
+      printf("PS.: Para salvar um jogo, digite '/s' na seleção de peça, em qualquer turno\n\nCappuccino é um jogo abstrato para quatro jogadores cujo objetivo é ter a maior\nquantidade de pilhas sobre seu domínio ao final da partida.\nEsse objetivo é alcançado empilhando peças durante a partida.\nCada Jogador começa com 5 peças sendo elas posicionadas aleatoriamente no tabuleiro 5x5.\n\n1 - Você só pode mecher peças suas.\n2 - Uma peça só pode se mover para cima de outra peça, sendo impossível se mover para um espaço vazio.\n3 - Você só pode empilhar peças de altura menor ou igual a sua.\n4 - O fim da partida será quando restar apenas um jogador ou não houver mais movimentos possíveis.\n5 - Em caso de empate, a ordem inversa dos turnos será usada para escolher um vencedor.\n(jogador 4 tem vantagem sobre o 3, o 3 sobre o 2, etc)\n\nPressione Enter para voltar ao menu...");
       getch();
     } else if(menu == 3){
       limparTela();
