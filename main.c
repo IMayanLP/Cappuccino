@@ -21,9 +21,11 @@ struct tab{
 
 void salvarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
     FILE *arq;
+    char *pasta = "saves/";
     char *nome = arquivo;
-
-    arq = fopen(nome, "w");
+    char diretorio[50];
+    strcat(strcpy(diretorio, pasta), nome);
+    arq = fopen(diretorio, "w");
 
     if (arq == NULL){
         printf("Problemas na CRIAÇÃO do arquivo\n");
@@ -444,9 +446,7 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
       char nome[20];
       printf("Digite um nome para a partida: ");
       scanf("%s", &nome);
-      printf("%s", nome);
       salvarJogo(nome, matriz, jogadorAtual);
-      getch();
       logica(matriz, jogadorAtual);
       }
     } while (matriz[pos[0]][pos[1]].jogador != jogadorAtual);
