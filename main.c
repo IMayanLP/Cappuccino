@@ -60,7 +60,7 @@ void carregarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
     arv = fopen(diretorio, "r");
     
     if(arv == NULL){
-        printf("Deu ruim");
+        printf("Save não encontrado ou inexistente");
         getch();
         return;
     }
@@ -539,7 +539,7 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
 
 // Função main normal, sem segredo, só a main mesmo
 int main(void){
-  //setLocale no meu VSCode nao funciona, essa parada ai deu certo, obrigado stackOverflow
+  //setLocale no meu VSCode nao funciona, achei essa parada ai que deu certo
   SetConsoleOutputCP(65001);
 
   srand(time(NULL));
@@ -575,13 +575,19 @@ int main(void){
       } while (n != 1 || n != 2);
     } else if (menu == 2){
       limparTela();
-      printf("COMANDOS\n- Para salvar um jogo, digite '/s' na seleção de peça, em qualquer turno\n- Para sair da partida, digite '/e' na seleção de peça, em qualquer turno\n\nCappuccino é um jogo abstrato para quatro jogadores cujo objetivo é ter a maior\nquantidade de pilhas sobre seu domínio ao final da partida.\nEsse objetivo é alcançado empilhando peças durante a partida.\nCada Jogador começa com 5 peças sendo elas posicionadas aleatoriamente no tabuleiro 5x5.\n\n1 - Você só pode mecher peças suas.\n2 - Uma peça só pode se mover para cima de outra peça, sendo impossível se mover para um espaço vazio.\n3 - Você só pode empilhar peças de altura menor ou igual a sua.\n4 - O fim da partida será quando restar apenas um jogador ou não houver mais movimentos possíveis.\n5 - Em caso de empate, a ordem inversa dos turnos será usada para escolher um vencedor.\n(jogador 4 tem vantagem sobre o 3, o 3 sobre o 2, etc)\n\nPressione Enter para voltar ao menu...");
+      printf("COMANDOS\n- Para salvar um jogo, digite '/s' na seleção de peça, em qualquer turno\n- Para encerrar a partida, digite '/e' na seleção de peça, em qualquer turno\n\nCappuccino é um jogo abstrato para quatro jogadores cujo objetivo é ter a maior\nquantidade de pilhas sobre seu domínio ao final da partida.\nEsse objetivo é alcançado empilhando peças durante a partida.\nCada Jogador começa com 5 peças sendo elas posicionadas aleatoriamente no tabuleiro 5x5.\n\nREGRAS\n1 - Você só pode mecher peças suas.\n2 - Uma peça só pode se mover para cima de outra peça, sendo impossível se mover para um espaço vazio.\n3 - Você só pode empilhar peças de altura menor ou igual a sua.\n4 - O fim da partida será quando restar apenas um jogador ou não houver mais movimentos possíveis.\n5 - Em caso de empate, a ordem inversa dos turnos será usada para escolher um vencedor.\n(jogador 4 tem vantagem sobre o 3, o 3 sobre o 2, etc)\n\nPressione Enter para voltar ao menu...");
       getch();
     } else if(menu == 3){
       limparTela();
-      printf("Requisitos mínimos\n\nProcessador: Intel 4004\nPlaca de vídeo: Intel UHD Graphics 1\nMemória RAM: 2MB\nEspaço em disco: 60KB\n\nRequisitos recomendados: (ta um pouco pesado)\n\nProcessador: Ryzen 9 5950X 3.4GHz\nPlaca de vídeo: AMD Radeon RX 6900 XT\nMemória RAM: 32GB\nEspaço em disco: 1TB\n\nPressione Enter para voltar ao menu...");
+      printf("Requisitos mínimos\n\nProcessador: Intel 4004\nPlaca de vídeo: Intel UHD Graphics 1\nMemória RAM: 2MB\nEspaço em disco: 62KB\n\nPressione Enter para voltar ao menu...");
       getch();
     } else if (menu == 4){
+      char encerrando[3][5] = {".", "..", "..."};
+      for (int i = 0; i < 3; i++){
+        limparTela();
+        printf("Encerrando %s", encerrando[i]);
+        sleep(1);
+      }
       break;
     } else {
       menu = 1;
