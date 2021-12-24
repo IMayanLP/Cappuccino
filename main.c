@@ -30,7 +30,7 @@ void salvarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
     if (arq == NULL){
         printf("Problemas na CRIAÇÃO do arquivo\n");
         getch();
-        return 0;
+        return;
     }
 
     fprintf(arq, "%d\n", jogadorAtual);
@@ -51,6 +51,57 @@ void salvarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
     fclose(arq);
 }
 
+void carregarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
+    FILE *arv;
+    char *pasta = "saves/";
+    char *nome = arquivo;
+    char diretorio[50];
+    strcat(strcpy(diretorio, pasta), nome);
+    arv = fopen(diretorio, "r");
+    
+    if(arv == NULL){
+        printf("Deu ruim");
+        getch();
+        return;
+    }
+
+    char texto[15][50];
+
+    for (int i = 0; i < 11; i++){
+        fgets(texto[i], 50, arv);
+    }
+
+    char *linha;
+    int alturaMatriz[5][5], jogadorMatriz[5][5];
+    char *turno = strtok(texto[0], ",");
+    jogadorAtual = atoi(turno);
+
+    for (int i = 1; i < 6; i++){
+        linha = strtok(texto[i], ",");
+        for(int j = 0; j < 5; j++){
+            alturaMatriz[i-1][j] = atoi(linha);
+            linha = strtok(NULL, ",");
+        }
+    }
+    
+    for (int i = 6; i < 11; i++){
+        linha = strtok(texto[i], ",");
+        for(int j = 0; j < 5; j++){
+            jogadorMatriz[i-6][j] = atoi(linha);
+            linha = strtok(NULL, ",");
+        }
+    }
+    for (int i = 0; i < Tam; i++){
+        for (int j = 0; j < Tam; j++){
+          matriz[i][j].altura = alturaMatriz[i][j];
+          matriz[i][j].jogador = jogadorMatriz[i][j];
+        }
+    }
+    
+    fclose(arv);
+
+    exibeTabuleiro(matriz, jogadorAtual);
+}
 // Essa função inicia o jogo e chama todas as outras funções necessarias em ordem
 void iniciarJogo(struct tab matriz[Tam][Tam], int player[4][5], int jogadorAtual){
   jogadorAtual = 0;
@@ -507,8 +558,10 @@ int main(void){
           iniciarJogo(tabuleiro, player, jogadorAtual);
           getch();
         } else if (n == 2){
-          printf("EM REFORMA");
-          getch();
+          char nome[20];
+          printf("Digite o nome do save: ");
+          scanf("%s", &nome);
+          carregarJogo(nome, tabuleiro, jogadorAtual);
         }
       } while (n != 1 || n != 2);
     } else if (menu == 2){
