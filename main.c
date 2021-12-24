@@ -284,9 +284,9 @@ int validaMov(struct tab matriz[Tam][Tam], int pos[2], int mov){
   return 0;
 }
 
-// Essa função percorre o tabuleiro verificando se o jogador atual tem peças suas que ainda são validas para jogo (Eu sei que não precisava da variavel "pecasEmJogo" e dava pra fazer mais facil, mas eu botei pra por um printf e poder ver se ta funcionando 100% ai to com preguiça de mudar, dx assim mesmo)
+// Essa função percorre o tabuleiro verificando se o jogador atual tem peças suas que ainda são validas para jogo
 int jogadorEmJogo(struct tab matriz[Tam][Tam], int jogadorAtual){
-  int pos[2], pecasEmJogo = 0;
+  int pos[2];
   for (int i = 0; i < Tam; i++){
     for (int j = 0; j < Tam; j++){
       if (matriz[i][j].jogador == jogadorAtual){
@@ -497,9 +497,12 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
     if (validaPeca(matriz, pos)){
       printf("\n  7   8   9 \n   \\  ^  / \n 4 <  "); textoColorido(matriz[pos[0]][pos[1]].altura,matriz[pos[0]][pos[1]].jogador); printf("  > 6 \n   /  v  \\ \n  1   2   3 ");
       int mov;
-      printf("\nAgora, utilizando o teclado numerico escolha uma direcao VALIDA para ir:\t");
+      printf("\nDigite 5 para trocar a peça que escolheu\nAgora, utilizando o teclado numerico escolha uma direcao VALIDA para ir:\t");
       scanf("%d", &mov);
       getchar();
+      if (mov == 5){
+        logica(matriz, jogadorAtual);
+      }
       while (validaMov(matriz, pos, mov) == 0){
         printf("\nEscolha uma direcao VALIDA para ir:\t");
         scanf("%d", &mov);
