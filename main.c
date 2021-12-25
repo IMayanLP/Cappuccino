@@ -19,6 +19,7 @@ struct tab{
   int jogador;
 };
 
+// Essa função salva o jogo em um arquivo txt
 void salvarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
     FILE *arq;
     char *pasta = "saves/";
@@ -51,6 +52,7 @@ void salvarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
     fclose(arq);
 }
 
+// Essa função lê o arquivo e traduz para elementos da matriz
 void carregarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
     FILE *arv;
     char *pasta = "saves/";
@@ -109,12 +111,6 @@ void iniciarJogo(struct tab matriz[Tam][Tam], int player[4][5], int jogadorAtual
   gerarPlayers(player);
   gerarTabuleiro(matriz, player);
   exibeTabuleiro(matriz, jogadorAtual);
-}
-
-void encerrarPartida(){
-  limparTela();
-  printf("A partida será encerrada!");
-  getch();
 }
 
 // Texto coloridinho, obrigado Roberto
@@ -476,10 +472,12 @@ void exibeTabuleiro(struct tab matriz[Tam][Tam], int jogadorAtual){
 // Essa função é a lógica no jogo e no final chama a exibeTabuleiro() para fazer um loop para rodar o jogo
 void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
   if (fimPartida(matriz)){
+    printf("A partida acabou, pressione Enter para conferir o placar");
     getch();
     limparTela();
     verificarVencedor(matriz);
     getch();
+    return;
   } else {
     if (jogadorEmJogo(matriz, jogadorAtual)){
     char texto[2];
@@ -501,11 +499,9 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
       logica(matriz, jogadorAtual);
       }
       if(pos[0] == 6 && pos[1] == 7){
-      encerrarPartida();
       return;
       }
     } while (matriz[pos[0]][pos[1]].jogador != jogadorAtual);
-    printf("peca selecionada: "); textoColorido(matriz[pos[0]][pos[1]].altura,matriz[pos[0]][pos[1]].jogador);
     if (validaPeca(matriz, pos)){
       printf("\n  7   8   9 \n   \\  ^  / \n 4 <  "); textoColorido(matriz[pos[0]][pos[1]].altura,matriz[pos[0]][pos[1]].jogador); printf("  > 6 \n   /  v  \\ \n  1   2   3 ");
       int mov;
@@ -518,6 +514,9 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
       while (validaMov(matriz, pos, mov) == 0){
         printf("\nEscolha uma direcao VALIDA para ir:\t");
         scanf("%d", &mov);
+        if (mov == 5){
+        logica(matriz, jogadorAtual);
+        }
         getchar();
       }
       MoverPeca(matriz, pos, mov);
