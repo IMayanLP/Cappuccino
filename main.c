@@ -19,8 +19,151 @@ struct tab{
   int jogador;
 };
 
+// Essa função cria um arquivo para o replay
+void criarReplay(char *replay, struct tab matriz[Tam][Tam]){
+  FILE *arq;
+  char *pasta = "replays/";
+  char diretorio[50];
+  strcat(strcpy(diretorio, pasta), replay);
+  arq = fopen(diretorio, "w");
+
+  if (arq == NULL){ printf("Problemas na CRIACAO do arquivo\n"); return 0; }
+
+  for (int i = 0; i < 5; i++){
+        for (int j = 0; j < 5; j++){
+            fprintf(arq, "%d,", matriz[i][j].altura);
+        }
+        fprintf(arq, "\n");
+    }
+
+    for (int i = 0; i < 5; i++){
+        for (int j = 0; j < 5; j++){
+            fprintf(arq, "%d,", matriz[i][j].jogador);
+        }
+        fprintf(arq, "\n");
+    }
+
+  fclose(arq);
+}
+
+// Essa função fica atualizando o histórico de jogadas
+void atualizarReplay(char *arquivo, int linha, int coluna, int mov){
+    FILE *arq;
+    char *pasta = "replays/";
+    char *nome = arquivo;
+    char diretorio[50];
+    strcat(strcpy(diretorio, pasta), nome);
+    arq = fopen(diretorio, "a+");
+
+    if (arq == NULL){
+        printf("Problemas na CRIAÇÃO do arquivo\n");
+        getch();
+        return;
+    }
+
+    fprintf(arq, "%d,%d,%d\n", linha, coluna, mov);
+
+    fclose(arq);
+}
+
+// Essa função percorre o arquivo de histórico de jogadas (replay)
+void verReplay(char *arquivo, struct tab matriz[Tam][Tam]){
+  FILE *arq;
+  char *pasta = "replays/";
+  char *nome = arquivo;
+  char diretorio[50];
+  strcat(strcpy(diretorio, pasta), nome);
+  arq = fopen(diretorio, "r");
+
+  if (arq == NULL){ printf("Problemas na CRIAÇÃO do arquivo\n"); getch(); return; }
+
+  int totalLinhas = numLinhas(arquivo);
+  
+  char texto[totalLinhas][50];
+
+  for (int i = 0; i < totalLinhas; i++){
+    fgets(texto[i], 50, arq);
+  }
+
+  char *linha;
+  int alturaMatriz[5][5], jogadorMatriz[5][5];
+
+  // POSICIONANDO TABULEIRO
+  for (int i = 0; i < 5; i++){
+    linha = strtok(texto[i], ",");
+    for(int j = 0; j < 5; j++){
+      alturaMatriz[i][j] = atoi(linha);
+      linha = strtok(NULL, ",");
+    }
+  }
+    
+  for (int i = 5; i < 10; i++){
+    linha = strtok(texto[i], ",");
+    for(int j = 0; j < 5; j++){
+      jogadorMatriz[i-5][j] = atoi(linha);
+      linha = strtok(NULL, ",");
+    }
+  }
+  
+  for (int i = 0; i < Tam; i++){
+    for (int j = 0; j < Tam; j++){
+      matriz[i][j].altura = alturaMatriz[i][j];
+      matriz[i][j].jogador = jogadorMatriz[i][j];
+      }
+  }
+
+  // HISTÓRICO
+  char *lin, *col, *dir;
+  int pos[2], mov;
+  for (int i = 10; i < totalLinhas; i++){
+    linha = strtok(texto[i], "\n");
+    lin = strtok(linha, ",");
+    linha = strtok(NULL, "\n");
+    col = strtok(linha, ",");
+    linha = strtok(NULL, "\n");
+    dir = strtok(linha, ",");
+    pos[0] = atoi(lin);
+    pos[1] = atoi(col);
+    mov = atoi(dir);
+    moverPeca(matriz, pos, mov);
+    limparTela();
+    mostrarTabuleiro(matriz);
+    sleep(3);
+  }
+  printf("Replay finalizado, verificando vencedor...\n");
+  sleep(3);
+  verificarVencedor(matriz);
+  
+  fclose(arq);
+
+}
+
+// Essa função retorna o número de linhas em um arquivo
+int numLinhas(char *nome){
+  FILE *arv;
+  char *pasta = "replays/";
+  char diretorio[50];
+  strcat(strcpy(diretorio, pasta), nome);
+  arv = fopen(diretorio, "r");
+
+  if(arv == NULL){ printf("Deu ruim"); return 0; }
+
+  char arquivo[200];
+  int rodadas = 0;
+
+  while((fgets(arquivo, 10, arv)) != NULL){
+    rodadas++;
+  }
+
+  fclose(arv);
+
+  rodadas=rodadas-10;
+
+  return rodadas;
+}
+
 // Essa função salva o jogo em um arquivo txt
-void salvarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
+void salvarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual, char *replay){
     FILE *arq;
     char *pasta = "saves/";
     char *nome = arquivo;
@@ -49,11 +192,13 @@ void salvarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
         fprintf(arq, "/\n");
     }
 
+    fprintf(arq, "%s", replay);
+
     fclose(arq);
 }
 
 // Essa função lê o arquivo e traduz para elementos da matriz
-void carregarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
+void carregarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual, char *replay){
     FILE *arv;
     char *pasta = "saves/";
     char *nome = arquivo;
@@ -69,7 +214,7 @@ void carregarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
 
     char texto[15][50];
 
-    for (int i = 0; i < 11; i++){
+    for (int i = 0; i < 12; i++){
         fgets(texto[i], 50, arv);
     }
 
@@ -77,6 +222,7 @@ void carregarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
     int alturaMatriz[5][5], jogadorMatriz[5][5];
     char *turno = strtok(texto[0], ",");
     jogadorAtual = atoi(turno);
+    replay = texto[11];
 
     for (int i = 1; i < 6; i++){
         linha = strtok(texto[i], ",");
@@ -102,7 +248,7 @@ void carregarJogo(char *arquivo, struct tab matriz[Tam][Tam], int jogadorAtual){
     
     fclose(arv);
 
-    exibeTabuleiro(matriz, jogadorAtual);
+    exibeTabuleiro(matriz, jogadorAtual, replay);
 }
 
 // Essa função inicia o jogo e chama todas as outras funções necessarias em ordem
@@ -110,7 +256,11 @@ void iniciarJogo(struct tab matriz[Tam][Tam], int player[4][5], int jogadorAtual
   jogadorAtual = 0;
   gerarPlayers(player);
   gerarTabuleiro(matriz, player);
-  exibeTabuleiro(matriz, jogadorAtual);
+  char replay[50];
+  printf("\nDigite um nome para o replay dessa partida: ");
+  scanf("%s", replay);
+  criarReplay(replay, matriz);
+  exibeTabuleiro(matriz, jogadorAtual, replay);
 }
 
 // Texto coloridinho, obrigado Roberto
@@ -307,7 +457,7 @@ int jogadorEmJogo(struct tab matriz[Tam][Tam], int jogadorAtual){
 }
 
 // Essa função move uma peça após ela ter sido validada e o movimento aprovado
-void MoverPeca(struct tab matriz[Tam][Tam], int pos[2], int mov){
+void moverPeca(struct tab matriz[Tam][Tam], int pos[2], int mov){
   switch (mov){
   case 1:
     if (matriz[pos[0]+1][pos[1]-1].altura > 0 && (matriz[pos[0]+1][pos[1]-1].altura <= matriz[pos[0]][pos[1]].altura) && (pos[0]+1 < 5 && pos[0]+1 >= 0) && (pos[1]-1 >= 0 && pos[1]-1 < 5)){
@@ -446,7 +596,7 @@ void verificarVencedor(struct tab matriz[Tam][Tam]){
 }
 
 // Essa função é igual a mostrarTabuleiro a unica diferença é que no final eu chamo a logica() pra fazer um loop para rodar o jogo, a outra eu uso quando vou dar um CLS pq se eu chamar essa aqui ela reseta a lógica.
-void exibeTabuleiro(struct tab matriz[Tam][Tam], int jogadorAtual){
+void exibeTabuleiro(struct tab matriz[Tam][Tam], int jogadorAtual, char *replay){
   limparTela();
   printf("    1   2   3   4   5 ");
   printf("\n  ---------------------\n");
@@ -466,11 +616,11 @@ void exibeTabuleiro(struct tab matriz[Tam][Tam], int jogadorAtual){
     }
     printf("\n  ---------------------\n");
   }
-  logica(matriz, jogadorAtual);
+  logica(matriz, jogadorAtual, replay);
 }
 
 // Essa função é a lógica no jogo e no final chama a exibeTabuleiro() para fazer um loop para rodar o jogo
-void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
+void logica(struct tab matriz[Tam][Tam], int jogadorAtual, char *replay){
   if (fimPartida(matriz)){
     printf("A partida acabou, pressione Enter para conferir o placar");
     getch();
@@ -495,8 +645,8 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
       char nome[20];
       printf("Digite um nome para a partida: ");
       scanf("%s", &nome);
-      salvarJogo(nome, matriz, jogadorAtual);
-      logica(matriz, jogadorAtual);
+      salvarJogo(nome, matriz, jogadorAtual, replay);
+      logica(matriz, jogadorAtual, replay);
       }
       if(pos[0] == 6 && pos[1] == 7){
       return;
@@ -509,29 +659,30 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual){
       scanf("%d", &mov);
       getchar();
       if (mov == 5){
-        logica(matriz, jogadorAtual);
+        logica(matriz, jogadorAtual, replay);
       }
       while (validaMov(matriz, pos, mov) == 0){
         printf("\nEscolha uma direcao VALIDA para ir:\t");
         scanf("%d", &mov);
         if (mov == 5){
-        logica(matriz, jogadorAtual);
+        logica(matriz, jogadorAtual, replay);
         }
         getchar();
       }
-      MoverPeca(matriz, pos, mov);
+      moverPeca(matriz, pos, mov);
+      atualizarReplay(replay, pos[0], pos[1], mov);
       jogadorAtual = trocaTurno(jogadorAtual);
-      exibeTabuleiro(matriz, jogadorAtual);
+      exibeTabuleiro(matriz, jogadorAtual, replay);
     } else {
       printf("\nImpossivel mover essa peca");
       getch();
-      logica(matriz, jogadorAtual);
+      logica(matriz, jogadorAtual, replay);
     }
     } else {
     printf("\nJogador "); textoColorido(jogadorAtual+1, jogadorAtual); printf(" sem peças");
     getch();
     jogadorAtual = trocaTurno(jogadorAtual);
-    exibeTabuleiro(matriz, jogadorAtual);
+    exibeTabuleiro(matriz, jogadorAtual, replay);
     }
   }
 }
@@ -550,7 +701,7 @@ int main(void){
 
   do{
     limparTela();
-    printf("-=-=-=-=-=-=-=-=-=-=-\n1 - Jogar\n2 - Regras\n3 - Requisitos mínimos\n4 - Sair\n-=-=-=-=-=-=-=-=-=-=-\nO que deseja fazer?\t");
+    printf("-=-=-=-=-=-=-=-=-=-=-\n1 - Jogar\n2 - Sobre\n3 - Ver replay\n4 - Requisitos mínimos\n5 - Sair\n-=-=-=-=-=-=-=-=-=-=-\nO que deseja fazer?\t");
     scanf("%d", &menu);
     getchar();
     if (menu == 1){
@@ -568,19 +719,26 @@ int main(void){
           char nome[20];
           printf("Digite o nome do save: ");
           scanf("%s", &nome);
-          carregarJogo(nome, tabuleiro, jogadorAtual);
+          carregarJogo(nome, tabuleiro, jogadorAtual, "");
           break;
         }
       } while (n != 1 || n != 2);
     } else if (menu == 2){
       limparTela();
-      printf("COMANDOS\n- Para salvar um jogo, digite '/s' na seleção de peça, em qualquer turno\n- Para encerrar a partida, digite '/e' na seleção de peça, em qualquer turno\n\nCappuccino é um jogo abstrato para quatro jogadores cujo objetivo é ter a maior\nquantidade de pilhas sobre seu domínio ao final da partida.\nEsse objetivo é alcançado empilhando peças durante a partida.\nCada Jogador começa com 5 peças sendo elas posicionadas aleatoriamente no tabuleiro 5x5.\n\nREGRAS\n1 - Você só pode mecher peças suas.\n2 - Uma peça só pode se mover para cima de outra peça, sendo impossível se mover para um espaço vazio.\n3 - Você só pode empilhar peças de altura menor ou igual a sua.\n4 - O fim da partida será quando restar apenas um jogador ou não houver mais movimentos possíveis.\n5 - Em caso de empate, a ordem inversa dos turnos será usada para escolher um vencedor.\n(jogador 4 tem vantagem sobre o 3, o 3 sobre o 2, etc)\n\nPressione Enter para voltar ao menu...");
+      printf("Cappuccino é um jogo abstrato para quatro jogadores cujo objetivo é ter a maior\nquantidade de pilhas sobre seu domínio ao final da partida.\nEsse objetivo é alcançado empilhando peças durante a partida.\nCada Jogador começa com 5 peças sendo elas posicionadas aleatoriamente no tabuleiro 5x5.\n\nCOMANDOS\n- Para salvar um jogo, digite '/s' na seleção de peça, em qualquer turno\n- Para encerrar a partida, digite '/e' na seleção de peça, em qualquer turno\n\nREGRAS\n1 - Você só pode mecher peças suas.\n2 - Uma peça só pode se mover para cima de outra peça, sendo impossível se mover para um espaço vazio.\n3 - Você só pode empilhar peças de altura menor ou igual a sua.\n4 - O fim da partida será quando restar apenas um jogador ou não houver mais movimentos possíveis.\n5 - Em caso de empate, a ordem inversa dos turnos será usada para escolher um vencedor.\n(jogador 4 tem vantagem sobre o 3, o 3 sobre o 2, etc)\n\nAVISOS\n- Replays em que o jogo foi fechado podem estar corrompidos\n- Certifique-se de salvar um jogo ao sair da partida para não corromper o replay\n\nPressione Enter para voltar ao menu...");
       getch();
     } else if(menu == 3){
       limparTela();
+      char nome[20];
+      printf("Digite o nome do Replay: ");
+      scanf("%s", &nome);
+      verReplay(nome, tabuleiro);
+      getch();
+    } else if(menu == 4){
+      limparTela();
       printf("Requisitos mínimos\n\nProcessador: Intel 4004\nPlaca de vídeo: Intel UHD Graphics 1\nMemória RAM: 2MB\nEspaço em disco: 62KB\n\nPressione Enter para voltar ao menu...");
       getch();
-    } else if (menu == 4){
+    } else if (menu == 5){
       char encerrando[3][5] = {".", "..", "..."};
       for (int i = 0; i < 3; i++){
         limparTela();
@@ -594,5 +752,5 @@ int main(void){
       getch();
       continue;
     }
-  } while (menu > 0 && menu < 4);
+  } while (menu > 0 && menu < 5);
 }
