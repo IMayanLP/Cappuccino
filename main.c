@@ -115,6 +115,8 @@ void verReplay(char *arquivo, struct tab matriz[Tam][Tam]){
   // HISTÓRICO
   char *lin, *col, *dir;
   int pos[2], mov;
+  mostrarTabuleiro(matriz);
+  sleep(3);
   for (int i = 10; i < totalLinhas; i++){
     linha = strtok(texto[i], "\n");
     lin = strtok(linha, ",");
@@ -257,7 +259,7 @@ void iniciarJogo(struct tab matriz[Tam][Tam], int player[4][5], int jogadorAtual
   gerarPlayers(player);
   gerarTabuleiro(matriz, player);
   char replay[50];
-  printf("\nDigite um nome para o replay dessa partida: ");
+  printf("\nDigite um nome para essa partida: ");
   scanf("%s", replay);
   criarReplay(replay, matriz);
   exibeTabuleiro(matriz, jogadorAtual, replay);
@@ -627,7 +629,7 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual, char *replay){
     limparTela();
     verificarVencedor(matriz);
     getch();
-    return;
+    main();
   } else {
     if (jogadorEmJogo(matriz, jogadorAtual)){
     char texto[2];
@@ -645,11 +647,12 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual, char *replay){
       char nome[20];
       printf("Digite um nome para a partida: ");
       scanf("%s", &nome);
-      salvarJogo(nome, matriz, jogadorAtual, replay);
+      salvarJogo(nome, matriz, jogadorAtual, nome);
+      criarReplay(nome, matriz);
       logica(matriz, jogadorAtual, replay);
       }
       if(pos[0] == 6 && pos[1] == 7){
-      return;
+        main();
       }
     } while (matriz[pos[0]][pos[1]].jogador != jogadorAtual);
     if (validaPeca(matriz, pos)){
@@ -671,6 +674,7 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual, char *replay){
       }
       moverPeca(matriz, pos, mov);
       atualizarReplay(replay, pos[0], pos[1], mov);
+      salvarJogo(replay, matriz, jogadorAtual, replay);
       jogadorAtual = trocaTurno(jogadorAtual);
       exibeTabuleiro(matriz, jogadorAtual, replay);
     } else {
@@ -717,7 +721,7 @@ int main(void){
           getch();
         } else if (n == 2){
           char nome[20];
-          printf("Digite o nome do save: ");
+          printf("Digite o nome da partida: ");
           scanf("%s", &nome);
           carregarJogo(nome, tabuleiro, jogadorAtual, "");
           break;
@@ -725,7 +729,7 @@ int main(void){
       } while (n != 1 || n != 2);
     } else if (menu == 2){
       limparTela();
-      printf("Cappuccino é um jogo abstrato para quatro jogadores cujo objetivo é ter a maior\nquantidade de pilhas sobre seu domínio ao final da partida.\nEsse objetivo é alcançado empilhando peças durante a partida.\nCada Jogador começa com 5 peças sendo elas posicionadas aleatoriamente no tabuleiro 5x5.\n\nCOMANDOS\n- Para salvar um jogo, digite '/s' na seleção de peça, em qualquer turno\n- Para encerrar a partida, digite '/e' na seleção de peça, em qualquer turno\n\nREGRAS\n1 - Você só pode mecher peças suas.\n2 - Uma peça só pode se mover para cima de outra peça, sendo impossível se mover para um espaço vazio.\n3 - Você só pode empilhar peças de altura menor ou igual a sua.\n4 - O fim da partida será quando restar apenas um jogador ou não houver mais movimentos possíveis.\n5 - Em caso de empate, a ordem inversa dos turnos será usada para escolher um vencedor.\n(jogador 4 tem vantagem sobre o 3, o 3 sobre o 2, etc)\n\nAVISOS\n- Replays em que o jogo foi fechado podem estar corrompidos\n- Certifique-se de salvar um jogo ao sair da partida para não corromper o replay\n\nPressione Enter para voltar ao menu...");
+      printf("Cappuccino é um jogo abstrato para quatro jogadores cujo objetivo é ter a maior\nquantidade de pilhas sobre seu domínio ao final da partida.\nEsse objetivo é alcançado empilhando peças durante a partida.\nCada Jogador começa com 5 peças sendo elas posicionadas aleatoriamente no tabuleiro 5x5.\n\nCOMANDOS\n- O jogo será salvo automaticamente com o nome dado ao iniciar a partida.\nMas, é possível ramificar o save de um jogo a qualquer momento, digite '/s' na seleção de peça.\n- Para encerrar a partida, digite '/e' na seleção de peça, em qualquer turno.\n\nREGRAS\n1 - Você só pode mecher peças suas.\n2 - Uma peça só pode se mover para cima de outra peça, sendo impossível se mover para um espaço vazio.\n3 - Você só pode empilhar peças de altura menor ou igual a sua.\n4 - O fim da partida será quando restar apenas um jogador ou não houver mais movimentos possíveis.\n5 - Em caso de empate, a ordem inversa dos turnos será usada para escolher um vencedor.\n(jogador 4 tem vantagem sobre o 3, o 3 sobre o 2, etc)\n\nAVISOS\n- Abrir o Replay de um jogo inacabado fará com que o Replay seja incompleto.\n- Lembre-se que ao criar um novo save dento de uma partida em andamento, um novo replay será criado a partir do ponto em que salvou.\nAo criar saves com mesmo nome, o novo save sobrescreverá o anterior, portanto, cuidado.\n\nPressione Enter para voltar ao menu...");
       getch();
     } else if(menu == 3){
       limparTela();
@@ -734,6 +738,7 @@ int main(void){
       scanf("%s", &nome);
       verReplay(nome, tabuleiro);
       getch();
+      main();
     } else if(menu == 4){
       limparTela();
       printf("Requisitos mínimos\n\nProcessador: Intel 4004\nPlaca de vídeo: Intel UHD Graphics 1\nMemória RAM: 2MB\nEspaço em disco: 62KB\n\nPressione Enter para voltar ao menu...");
