@@ -132,9 +132,13 @@ void verReplay(char *arquivo, struct tab matriz[Tam][Tam]){
     mostrarTabuleiro(matriz);
     sleep(3);
   }
-  printf("Replay finalizado, verificando vencedor...\n");
-  sleep(3);
-  verificarVencedor(matriz);
+  if (fimPartida(matriz)){
+    printf("Replay finalizado, verificando vencedor...\n");
+    sleep(3);
+    verificarVencedor(matriz);
+  } else {
+    printf("Replay finalizado, a partida está incompleta...Pressione Enter para voltar ao menu\n");
+  }
   
   fclose(arq);
 
@@ -755,7 +759,7 @@ int main(void){
       menu = 1;
       printf("Digite uma opcao valida\n");
       getch();
-      continue;
+      break;
     }
   } while (menu > 0 && menu < 5);
 }
