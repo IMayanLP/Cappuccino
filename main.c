@@ -678,8 +678,8 @@ void logica(struct tab matriz[Tam][Tam], int jogadorAtual, char *replay){
       }
       moverPeca(matriz, pos, mov);
       atualizarReplay(replay, pos[0], pos[1], mov);
-      salvarJogo(replay, matriz, jogadorAtual, replay);
       jogadorAtual = trocaTurno(jogadorAtual);
+      salvarJogo(replay, matriz, jogadorAtual, replay);
       exibeTabuleiro(matriz, jogadorAtual, replay);
     } else {
       printf("\nImpossivel mover essa peca");
